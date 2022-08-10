@@ -6,7 +6,7 @@ const ctx = canvas.getContext("2d");
 const speed = 800;
 let direction = "s";
 const gridElem = 40;
-const apple = [5, 5];
+let apple = [5, 5];
 
 const snake = [
   [9, 9],
@@ -68,6 +68,20 @@ const gameOver = () => {
   return false;
 };
 
+const generateApple = () => {
+  const [x, y] = [
+    Math.trunc(Math.random() * 19),
+    Math.trunc(Math.random() * 19),
+  ];
+
+  for (let body of snake) {
+    if (body[0] === x && body[1] === y) {
+      return generateApple();
+    }
+  }
+  apple = [x, y];
+};
+
 const updateSnakePosition = () => {
   let head;
   switch (direction) {
@@ -88,7 +102,9 @@ const updateSnakePosition = () => {
   }
 
   snake.unshift(head);
-  snake.pop();
+  if (head[0] === apple[0] && head[1] === apple[1]) {
+    generateApple();
+  } else snake.pop();
   return gameOver();
 };
 
